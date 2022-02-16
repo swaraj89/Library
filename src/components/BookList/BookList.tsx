@@ -2,11 +2,13 @@ import React from "react";
 import { Table, Button } from "react-bootstrap";
 import styles from "./BookList.module.css";
 import { BookInterface } from "../../interface/Book.interface";
+import { ArrowClockwise, Trash, Wrench } from "react-bootstrap-icons";
 
 interface BookListProps {
   books: Array<BookInterface>;
   onDeleteClick: (id: string) => void;
   onUpdateClick: (id: string) => void;
+  onRefreshClick: () => void;
 }
 
 const BOOK_STATUS = ["Not Read", "Reading", "Read"];
@@ -15,12 +17,20 @@ const BookList: React.FC<BookListProps> = ({
   books,
   onDeleteClick,
   onUpdateClick,
+  onRefreshClick,
 }) => {
   return (
     <Table striped bordered hover variant="dark">
       <thead>
         <tr>
-          <th>#</th>
+          <th
+            style={{ cursor: "pointer" }}
+            onClick={(evt) => {
+              onRefreshClick();
+            }}
+          >
+            <ArrowClockwise />
+          </th>
           <th>Title</th>
           <th>Authors</th>
           <th>Current Status</th>
@@ -43,14 +53,14 @@ const BookList: React.FC<BookListProps> = ({
                   size="sm"
                   onClick={(event) => onUpdateClick(book.id as string)}
                 >
-                  Update
+                  <Wrench className="text-light" />
                 </Button>
                 <Button
                   variant="danger"
                   size="sm"
                   onClick={(event) => onDeleteClick(book.id as string)}
                 >
-                  Delete
+                  <Trash className="text-dark" />
                 </Button>
               </td>
             </tr>

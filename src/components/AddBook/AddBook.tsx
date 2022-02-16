@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import styles from "./AddBook.module.css";
 import { BookInterface } from "../../interface/Book.interface";
@@ -9,22 +9,20 @@ interface AddBookProps {
 }
 
 const AddBook: React.FC<AddBookProps> = ({ submitHandler, book }) => {
-  let initTitle = "";
-  let initAuthor = "";
-  let initStatus = -1;
-  let initAvailable = false;
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [status, setStatus] = useState(-1);
+  const [available, setAvailable] = useState(false);
+  const [isValid, setIsValid] = useState(false);
 
-  if (book !== null) {
-    initAuthor = book?.authors[0];
-    initTitle = book?.title;
-    initAvailable = book?.available as boolean;
-    initStatus = book?.status;
-  }
-
-  const [title, setTitle] = useState(initTitle);
-  const [author, setAuthor] = useState(initAuthor);
-  const [status, setStatus] = useState(initStatus);
-  const [available, setAvailable] = useState(initAvailable);
+  useEffect(() => {
+    if (book !== null) {
+      setAuthor(book?.authors[0]);
+      setTitle(book?.title);
+      setAvailable(book?.available as boolean);
+      setStatus(book?.status);
+    }
+  }, [book]);
 
   const onSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
@@ -49,15 +47,10 @@ const AddBook: React.FC<AddBookProps> = ({ submitHandler, book }) => {
 
   return (
     <>
-      <pre>{JSON.stringify(book, undefined, 2)}</pre>
-      <pre>{title}</pre>
-      <pre>{author}</pre>
-      <pre>{available}</pre>
-      <pre>{status}</pre>
       <Form onSubmit={onSubmit}>
         <Form.Group>
           <div className="input-group p-3 mb-2">
-            <span className="input-group-text">Title</span>
+            <span className="input-group-text">T</span>
             <Form.Control
               type="text"
               placeholder="Book Title"
@@ -69,7 +62,7 @@ const AddBook: React.FC<AddBookProps> = ({ submitHandler, book }) => {
 
         <Form.Group>
           <div className="input-group p-3 mb-2">
-            <span className="input-group-text">Author</span>
+            <span className="input-group-text">A</span>
             <Form.Control
               type="text"
               placeholder="Author"
@@ -79,7 +72,7 @@ const AddBook: React.FC<AddBookProps> = ({ submitHandler, book }) => {
           </div>
         </Form.Group>
 
-        <Form.Group>
+        <Form.Group className="input-group p-3 mb-2">
           <Form.Select
             id="currentStatus"
             onChange={(evt) => setStatus(parseInt(evt.target.value))}
@@ -92,7 +85,7 @@ const AddBook: React.FC<AddBookProps> = ({ submitHandler, book }) => {
           </Form.Select>
         </Form.Group>
 
-        <Form.Group className="p-3 mb-2">
+        <Form.Group className="input-group p-3 mb-2">
           <Form.Check
             type="checkbox"
             id="isAvailableCheck"
@@ -101,9 +94,11 @@ const AddBook: React.FC<AddBookProps> = ({ submitHandler, book }) => {
           />
         </Form.Group>
 
-        <Button variant="dark" size="sm" type="submit" className="p-3 mt-2">
-          Add or Update
-        </Button>
+        <Form.Group className="input-group p-3 mb-2">
+          <Button variant="dark" size="sm" type="submit" className="p-3 mt-2">
+            Add or Update
+          </Button>
+        </Form.Group>
       </Form>
     </>
   );

@@ -4,14 +4,17 @@ import { LibraryService } from "../../services";
 import { BookInterface } from "../../interface/Book.interface";
 import { Col, Container, Row, Spinner } from "react-bootstrap";
 
-const Library = () => {
+interface LibraryProps {
+  user: any;
+}
+
+const Library: React.FC<LibraryProps> = ({ user: any }) => {
   const [books, setBooks] = useState<BookInterface[]>([]);
   const [activeBook, setActiveBook] = useState<BookInterface | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
-
     try {
       fetchAllBooks();
     } catch (err) {
@@ -31,8 +34,7 @@ const Library = () => {
 
   const fetchBook = async (id: string) => {
     const data = await LibraryService.getBook(id);
-
-    setActiveBook(data.data() as BookInterface);
+    setActiveBook({ ...data.data(), id: data.id } as BookInterface);
   };
 
   const deleteBookHandler = async (id: string) => {
@@ -52,10 +54,14 @@ const Library = () => {
     }
   };
 
-  const onAddBookHandler = (newBook: BookInterface) => {
-    console.log(newBook);
+  const onAddBookHandler = (book: BookInterface) => {
     try {
-      LibraryService.addBook(newBook);
+      if (activeBook !== null) {
+        updateBook(book);
+      } else {
+        addBook(book);
+      }
+
       setLoading(true);
       fetchAllBooks();
     } catch (error) {
@@ -63,9 +69,26 @@ const Library = () => {
     }
   };
 
+  const refreshClickHandler = () => {
+    try {
+      setLoading(true);
+      fetchAllBooks();
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  };
+
+  const addBook = (newBook: BookInterface) => {
+    LibraryService.addBook(newBook);
+  };
+
+  const updateBook = (oldBook: BookInterface) => {
+    LibraryService.updateBook(activeBook?.id as string, oldBook);
+  };
+
   return (
     <>
-      <div className="mb-2 bg-warning text-dark fs-1 fw-light">Pathagar</div>
       <Container>
         <Row>
           <Col md={{ span: 6, offset: 4 }} className={"p-3 mb-2"}>
@@ -82,6 +105,7 @@ const Library = () => {
             books={books}
             onDeleteClick={deleteBookHandler}
             onUpdateClick={updateBookHandler}
+            onRefreshClick={refreshClickHandler}
           />
         )}
       </Container>
