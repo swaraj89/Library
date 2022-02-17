@@ -16,7 +16,7 @@ const Header: React.FC<HeaderProps> = ({ userEmail, onSignout }) => {
           {userEmail ? (
             <>
               <span className="fs-5  align-self-center">
-                Hello, ${userEmail} |{" "}
+                Hello, {userEmail} |{" "}
                 <Power
                   style={{ cursor: "pointer" }}
                   onClick={() => {
