@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { LoginService } from "../../services";
+import { Envelope, Key } from "react-bootstrap-icons";
 
 interface LoginProps {
   onLogin: (user: any) => void;
@@ -14,7 +15,9 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     <Form>
       <Form.Group>
         <div className="input-group p-3 mb-2">
-          <span className="input-group-text">E</span>
+          <span className="input-group-text">
+            <Envelope></Envelope>
+          </span>
           <Form.Control
             type="text"
             placeholder="Email"
@@ -26,7 +29,9 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
       <Form.Group>
         <div className="input-group p-3 mb-2">
-          <span className="input-group-text">A</span>
+          <span className="input-group-text">
+            <Key />
+          </span>
           <Form.Control
             type="password"
             placeholder="Password"
@@ -39,8 +44,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       <Form.Group className="input-group p-3 mb-2">
         <Button
           variant="dark"
-          size="sm"
-          className="p-3 mt-2"
+          className="mt-2"
           onClick={async (evt) => {
             const fbUser = await LoginService.signIn(email, password);
             debugger;

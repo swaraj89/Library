@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import "./App.css";
+import Header from "./components/Header/header";
 import { Library, Login } from "./containers";
 import { auth } from "./firebase.config";
+import { LoginService } from "./services";
 
 function App() {
-  const [authenticated, setAuthenticated] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState("");
+  const user = auth && auth.currentUser;
+
+  const [authenticated, setAuthenticated] = useState(user ? true : false);
+  const [loggedInUser, setLoggedInUser] = useState(user && user?.email);
 
   const loginHandler = (user: any) => {
     if (auth && auth.currentUser) {
@@ -15,19 +19,15 @@ function App() {
     }
   };
 
+  const logoutHandler = () => {
+    LoginService.signOut();
+    setAuthenticated(false);
+    setLoggedInUser("");
+  };
+
   return (
     <div className="App">
-      <Container fluid>
-        <Row>
-          <div className="mb-2 bg-warning text-dark fs-1 fw-light d-flex justify-content-between">
-            <span className="">Pathagar</span>
-            <span className="fs-5  align-self-center">
-              {authenticated ? `Hello, ${loggedInUser}` : ``}
-            </span>
-          </div>
-        </Row>
-      </Container>
-
+      <Header userEmail={loggedInUser} onSignout={logoutHandler} />
       {authenticated ? (
         <Library user={loggedInUser} />
       ) : (
